@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package format="2">
+    <name>humanoid_legged_description</name>
+    <version>0.0.1</version>
+    <description>The humanoid_legged_description package</description>
+
+    <maintainer email="farbod.farshidian@gmail.com">Farbod Farshidian</maintainer>
+    <maintainer email="jcarius@ethz.ch">Jan Carius</maintainer>
+    <maintainer email="rgrandia@ethz.ch">Ruben Grandia</maintainer>
+
+    <license>TODO</license>
+
+    <buildtool_depend>ament_cmake</buildtool_depend>
+
+
+    <depend>joint_state_publisher_gui</depend>
+
+    <export>
+        <build_type>ament_cmake</build_type>
+    </export>
+</package>

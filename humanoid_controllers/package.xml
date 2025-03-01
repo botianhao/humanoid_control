@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<package format="2">
+    <name>humanoid_controllers</name>
+    <version>0.0.0</version>
+    <description>The humanoid_controllers packages.</description>
+    <maintainer email="liaoqiayuan@gmail.com">Qiayuan Liao</maintainer>
+    <license>BSD</license>
+    <author email="liaoqiayuan@gmail.com">Qiayuan Liao</author>
+
+    
+    <buildtool_depend>ament_cmake</buildtool_depend>
+    <build_depend>cmake_clang_tools</build_depend>
+    
+
+    <depend>rclcpp</depend>
+    <depend>humanoid_interface</depend>
+    <depend>humanoid_estimation</depend>
+    <depend>humanoid_wbc</depend>
+    <depend>geometry_msgs</depend>
+    <depend>ocs2_msgs</depend>
+    <depend>ocs2_ros_interfaces</depend>
+    <depend>std_msgs</depend>
+    <depend>humanoid_dummy</depend>
+    <depend>ocs2_self_collision</depend>
+    <depend>ocs2_self_collision_visualization</depend>
+
+    <depend>angles</depend>
+    <depend>hpp-fcl</depend>
+    <test_depend>ament_lint_auto</test_depend>
+    <test_depend>ament_lint_common</test_depend>
+    <exec_depend>controller_manager</exec_depend>
+    <export>                               
+        <build_type>ament_cmake</build_type>
+    </export>
+
+</package>

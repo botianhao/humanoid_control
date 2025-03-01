@@ -1,0 +1,314 @@
+centroidalModelType             1      // 0: FullCentroidalDynamics, 1: Single Rigid Body Dynamics
+  
+humanoid_interface
+{
+  verbose                               false  // show the loaded parameters
+  useAnalyticalGradientsDynamics        false
+  useAnalyticalGradientsConstraints     false
+}
+
+model_settings
+{
+  positionErrorGain             20.0 ; 20.0
+  phaseTransitionStanceTime     0.4
+
+  verboseCppAd                  false
+  recompileLibrariesCppAd       true
+  modelFolderCppAd              /tmp/ocs2
+}
+
+swing_trajectory_config
+{
+  liftOffVelocity               0.065
+  touchDownVelocity            -0.065
+  swingHeight                   0.06
+  swingTimeScale                0.15
+}
+
+; Multiple_Shooting SQP settings
+sqp
+{
+  nThreads                              6
+  dt                                    0.015
+  sqpIteration                          1
+  deltaTol                              1e-4
+  g_max                                 1e-2
+  g_min                                 1e-6
+  inequalityConstraintMu                0.1
+  inequalityConstraintDelta             5.0
+  projectStateInputEqualityConstraints  true
+  printSolverStatistics                 false
+  printSolverStatus                     false
+  printLinesearch                       false
+  useFeedbackPolicy                     false
+  integratorType                        RK2
+  threadPriority                        50
+}
+
+; Multiple_Shooting IPM settings
+ipm
+{
+  nThreads                              3
+  dt                                    0.015
+  ipmIteration                          1
+  deltaTol                              1e-4
+  g_max                                 10.0
+  g_min                                 1e-6
+  computeLagrangeMultipliers            true
+  printSolverStatistics                 true
+  printSolverStatus                     false
+  printLinesearch                       false
+  useFeedbackPolicy                     false
+  integratorType                        RK2
+  threadPriority                        50
+
+  initialBarrierParameter               1e-4
+  targetBarrierParameter                1e-4
+  barrierLinearDecreaseFactor           0.2
+  barrierSuperlinearDecreasePower       1.5
+  barrierReductionCostTol               1e-3
+  barrierReductionConstraintTol         1e-3
+
+  fractionToBoundaryMargin              0.995
+  usePrimalStepSizeForDual              false
+
+  initialSlackLowerBound                1e-4
+  initialDualLowerBound                 1e-4
+  initialSlackMarginRate                1e-2
+  initialDualMarginRate                 1e-2
+}
+
+; Rollout settings
+rollout
+{
+  AbsTolODE                       1e-5
+  RelTolODE                       1e-3
+  timeStep                        0.015
+  integratorType                  ODE45
+  maxNumStepsPerSecond            10000
+  checkNumericalStability         false
+}
+
+mpc
+{
+  timeHorizon                     1.5  ; [s]
+  solutionTimeWindow              -1   ; maximum [s]
+  coldStart                       false
+
+  debugPrint                      false
+
+  mpcDesiredFrequency             100  ; [Hz]
+  mrtDesiredFrequency             1000 ; [Hz] Useless
+}
+
+
+initialState
+{
+   ;; Normalized Centroidal Momentum: [linear, angular] ;;
+   (0,0)  0.0     ; vcom_x
+   (1,0)  0.0     ; vcom_y
+   (2,0)  0.0     ; vcom_z
+   (3,0)  0.0     ; L_x / robotMass
+   (4,0)  0.0     ; L_y / robotMass
+   (5,0)  0.0     ; L_z / robotMass
+
+   ;; Base Pose: [position, orientation] ;;
+   (6,0)  0.0     ; p_base_x
+   (7,0)  0.0     ; p_base_y
+   (8,0)  0.7995   ; p_base_z
+   (9,0)  0.0     ; theta_base_z
+   (10,0) 0.0     ; theta_base_y
+   (11,0) 0.0     ; theta_base_x
+
+   ;; Leg Joint Positions: [LF, LH, RF, RH] ;;
+   (12,0) 0.05   ; leg_l1_joint
+   (13,0) 0   ; leg_l2_joint
+   (14,0) 0.37   ; leg_l3_joint
+   (15,0) 0.90  ; leg_l4_joint
+   (16,0) 0.53   ; leg_l5_joint
+   (17,0) 0.00   ; leg_l6_joint
+   (18,0) -0.05   ; leg_r1_joint
+   (19,0) 0.0   ; leg_r2_joint
+   (20,0) 0.37   ; leg_r3_joint
+   (21,0) 0.90  ; leg_r4_joint
+   (22,0) 0.53   ; leg_r5_joint
+   (23,0) 0.00   ; leg_r6_joint
+}
+
+; standard state weight matrix
+Q
+{
+  scaling 1e+0
+
+  ;; Normalized Centroidal Momentum: [linear, angular] ;;
+  (0,0)   13.0     ; vcom_x
+  (1,1)   13.0     ; vcom_y
+  (2,2)   13.0     ; vcom_z
+  (3,3)   13.0      ; L_x / robotMass
+  (4,4)   13.0     ; L_y / robotMass
+  (5,5)   13.0     ; L_z / robotMass
+
+  ;; Base Pose: [position, orientation] ;;
+  (6,6)   500.0    ; p_base_x
+  (7,7)   500.0    ; p_base_y
+  (8,8)   3000.0    ; p_base_z
+  (9,9)   1500.0    ; theta_base_z
+  (10,10) 5000.0    ; theta_base_y
+  (11,11) 5000.0    ; theta_base_x
+
+  ;; Leg Joint Positions: [LF, LH, RF, RH] ;;
+  (12,12) 300.0     ; leg_l1_joint
+  (13,13) 200.0     ; leg_l2_joint
+  (14,14) 60.0     ; leg_l3_joint
+  (15,15) 30.0     ; leg_l4_joint
+  (16,16) 10.0     ; leg_l5_joint
+  (17,17) 10.0     ; leg_l6_joint
+  (18,18) 300.0     ; leg_r1_joint
+  (19,19) 200.0     ; leg_r2_joint
+  (20,20) 60.0     ; leg_r3_joint
+  (21,21) 30.0     ; leg_r4_joint
+  (22,22) 10.0     ; leg_r5_joint
+  (23,23) 10.0     ; leg_r6_joint
+}
+
+; control weight matrix
+R
+{
+  scaling 1e-3
+
+  ;; Feet Contact Forces: [LF, RF, LH, RH] ;;
+  (0,0)   2.0       ; x
+  (1,1)   1.5       ; y
+  (2,2)   5.0       ; z
+  (3,3)   2.0       ; x
+  (4,4)   1.5       ; y
+  (5,5)   5.0       ; z
+  (6,6)   2.0       ; x
+  (7,7)   1.5       ; y
+  (8,8)   5.0       ; z
+  (9,9)   2.0       ; x
+  (10,10) 1.5       ; y
+  (11,11) 5.0       ; z
+
+  ;; foot velocity relative to base: [LF, LH, RF, RH] (uses the Jacobian at nominal configuration) ;;
+  (12,12) 4000.0    ; x
+  (13,13) 4000.0    ; y
+  (14,14) 2000.0    ; z
+  (15,15) 4000.0    ; x
+  (16,16) 4000.0    ; y
+  (17,17) 2000.0    ; z
+  (18,18) 4000.0    ; x
+  (19,19) 4000.0    ; y
+  (20,20) 2000.0    ; z
+  (21,21) 4000.0    ; x
+  (22,22) 4000.0    ; y
+  (23,23) 2000.0    ; z
+}
+
+frictionConeSoftConstraint
+{
+  frictionCoefficient    0.5
+  
+  ; relaxed log barrier parameters
+  mu                     0.1
+  delta                  5.0
+}
+
+selfCollision
+{
+  ; Self Collision raw object pairs
+  collisionObjectPairs
+  {
+  }
+
+  ; Self Collision pairs
+  collisionLinkPairs
+  {
+  }
+
+  minimumDistance  0.02
+
+  ; relaxed log barrier parameters
+  mu      1e-2
+  delta   1e-3
+}
+
+; Whole body control
+torqueLimitsTask
+{
+   (0,0)  150.0     ; motor 1
+   (1,0)  90.0     ; motor 2
+   (2,0)  320.0     ; motor 3
+   (3,0)  320.0     ; motor 4
+   (4,0)  72.0     ; motor 5
+   (5,0)  48.0     ; motor 6
+}
+
+frictionConeTask
+{
+  frictionCoefficient    0.7
+}
+
+swingLegTask
+{
+    kp                   200  
+    kd                   12   
+}
+
+baseAngularTask 
+{
+    kp                   30
+    kd                   3
+}
+
+weight
+{
+    swingLeg        100
+    baseAccel       1
+    contactForce    1
+}
+
+; State Estimation
+kalmanFilter
+{
+    footRadius                  -0.02
+    imuProcessNoisePosition     0.04
+    imuProcessNoiseVelocity     0.02
+    footProcessNoisePosition    0.001
+    footSensorNoisePosition     0.001
+    footSensorNoiseVelocity     0.05
+    footHeightSensorNoise       0.01
+}
+
+contactForceEsimation
+{
+   cutoffFrequency    250
+   contactThreshold   75
+}
+
+; 机器人Imu装歪了一点，或机器人有向某个方向行走的固定偏差，可以微调这里
+imuBias
+{
+   yaw    0.0 ; useless for relative yaw control
+   pitch  0.000
+   roll   0.0
+}
+
+
+joint_pos_bias
+{
+   (0,0)  0.0
+   (1,0)  0.0
+   (2,0)  0.0
+   (3,0)  0.0
+   (4,0)  0.0
+   (5,0)  0.0
+   (6,0)  0.0
+   (7,0)  0.0
+   (8,0)  0.00
+   (9,0)  0.00
+   (10,0) 0.0
+   (11,0) 0.0
+}
+
+
