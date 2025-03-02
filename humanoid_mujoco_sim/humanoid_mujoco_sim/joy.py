@@ -20,7 +20,7 @@ def callback(data):
     global vx, vy, w, key_Y_pressed, key_X_pressed
     vx = data.axes[1] * 0.1
     vy = data.axes[0] * 0.02
-    w = data.axes[2] * 0.3
+    w = data.axes[3] * 0.3
     if data.buttons[3] == 1:
         key_Y_pressed = True
     else:
